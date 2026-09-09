@@ -1,0 +1,47 @@
+__pycache__/
+*.py[cod]
+*$py.class
+
+
+.venv/
+venv/
+env/
+
+.ipynb_checkpoints/
+
+
+.env
+
+
+data/raw/*
+data/interim/*
+data/processed/*
+!data/raw/.gitkeep
+!data/interim/.gitkeep
+!data/processed/.gitkeep
+
+
+models/*
+!models/.gitkeep
+*.pkl
+*.joblib
+
+
+reports/figures/*
+!reports/figures/.gitkeep
+
+
+.pytest_cache/
+.coverage
+htmlcov/
+
+# OS junk
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Streamlit
+.streamlit/

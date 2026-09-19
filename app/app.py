@@ -4,8 +4,14 @@ from __future__ import annotations
 
 from datetime import date
 from pathlib import Path
+import sys
 
 import streamlit as st
+
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
 
 from src.models.predict import (
     load_model_artifact,
@@ -13,7 +19,6 @@ from src.models.predict import (
 )
 
 
-PROJECT_ROOT = Path(__file__).resolve().parents[1]
 MODEL_PATH = PROJECT_ROOT / "models" / "tuned_xgboost_pipeline.joblib"
 
 STATE_OPTIONS = [

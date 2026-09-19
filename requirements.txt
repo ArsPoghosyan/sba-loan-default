@@ -1,13 +1,18 @@
-numpy>=1.26
-pandas>=2.2
-scikit-learn>=1.9
-xgboost>=2.0
-imbalanced-learn>=0.12
-matplotlib>=3.9
-seaborn>=0.13
-shap>=0.45
-jupyterlab>=4.2
-pytest>=8.2
-joblib>=1.4
-python-dotenv>=1.0
-streamlit>=1.35
+# Data and modeling
+numpy==2.5.3
+pandas==3.0.5
+scikit-learn==1.9.0
+xgboost==3.4.1
+joblib==1.6.0
+
+# Analysis and visualization notebooks
+matplotlib==3.11.1
+seaborn==0.13.2
+shap==0.52.0
+jupyterlab==4.6.3
+
+# Testing
+pytest==9.1.1
+
+# Optional interactive deployment
+streamlit==1.35.0

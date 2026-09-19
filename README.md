@@ -121,6 +121,18 @@ Run these commands from the repository root after placing the raw dataset in `da
 
 The notebooks remain the exploratory record of the project. The `src/` pipeline is the reproducible implementation of the final decisions.
 
+## Streamlit demo
+
+The repository includes an interactive single-loan demo in `app/app.py`. It accepts raw approval-time inputs, engineers the same features used during training, and applies the frozen tuned XGBoost artifact.
+
+Run it locally from the repository root:
+
+```powershell
+.\.venv\Scripts\python.exe -m streamlit run app/app.py
+```
+
+The interface is an educational portfolio demonstration based on historical SBA data. It is not a production credit-decision tool.
+
 ## Tests
 
 Run the complete test suite with:

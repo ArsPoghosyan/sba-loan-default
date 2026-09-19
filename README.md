@@ -71,9 +71,12 @@ data/
   raw/                 Local SBA source data, excluded from Git
   processed/           Cleaned and feature datasets, excluded from Git
 docs/                  SBA data dictionary
-models/                Local joblib artifacts, excluded from Git
+  images/              README assets
+models/                Frozen tuned-model artifact used by the demo
 notebooks/             EDA, cleaning, modeling, tuning, and interpretation
 reports/               Final metrics, feature importance, and figures
+.streamlit/            Streamlit Community Cloud theme configuration
+app/                   Interactive Streamlit prediction interface
 src/
   data/                Cleaning functions and dataset CLI
   features/            Feature engineering and preprocessing
@@ -129,6 +132,10 @@ The repository includes an interactive single-loan demo in `app/app.py`. It acce
 
 Live demo: [sba-loan-default-predictor.streamlit.app](https://sba-loan-default-predictor.streamlit.app/)
 
+![Streamlit demo showing a charge-off prediction](docs/images/streamlit-demo.png)
+
+*Streamlit interface using approval-time loan information and the frozen tuned XGBoost pipeline.*
+
 Run it locally from the repository root:
 
 ```powershell
@@ -145,7 +152,7 @@ Run the complete test suite with:
 .\.venv\Scripts\python.exe -m pytest tests
 ```
 
-The current suite contains 27 tests covering cleaning rules, feature engineering, temporal splitting, preprocessing, model configuration, metric calculation, threshold selection, and artifact feature-schema validation.
+The current suite contains 36 tests covering cleaning rules, feature engineering, temporal splitting, preprocessing, model configuration, metric calculation, threshold selection, artifact feature-schema validation, inference feature building, and prediction utilities.
 
 ## Limitations
 

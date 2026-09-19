@@ -44,4 +44,5 @@ Thumbs.db
 .idea/
 
 
-.streamlit/
+.streamlit/*
+!.streamlit/config.toml

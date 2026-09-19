@@ -2,7 +2,7 @@
 
 A binary-classification project that predicts whether an SBA 7(a) loan will be charged off, using SBA FOIA loan data for fiscal years 2010–2019.
 
-The project is being built as an end-to-end, reproducible machine-learning workflow: exploratory analysis, leakage-aware cleaning, feature engineering, chronological validation, model comparison, and final interpretation.
+The project implements an end-to-end machine-learning workflow: exploratory analysis, leakage-aware cleaning, feature engineering, chronological validation, model comparison, final evaluation, and interpretation.
 
 ## Project status
 
@@ -10,9 +10,9 @@ The project is being built as an end-to-end, reproducible machine-learning workf
 - [x] Data cleaning and processed dataset creation
 - [x] Feature engineering and chronological train/validation/test split
 - [x] Dummy-classifier and logistic-regression baselines
-- [ ] Random forest and XGBoost comparison
-- [ ] Model tuning and validation-threshold selection
-- [ ] Final FY2019 evaluation, calibration, and interpretation
+- [x] Random forest and XGBoost comparison
+- [x] Model tuning and validation-threshold selection
+- [x] Final FY2019 evaluation, calibration, and interpretation
 - [ ] Reusable `src/` pipeline and automated tests
 
 ## Dataset
@@ -68,17 +68,30 @@ The project uses a chronological split to better approximate deployment on futur
 
 The validation default rate is 10.13%, compared with 7.55% in training, illustrating why a random split would be less realistic.
 
-## Current baseline results
+## Model-selection results
 
-Models below were trained on FY2010–FY2017 and evaluated on FY2018. PR-AUC is the primary metric because charge-offs are the minority class.
+Models below were trained on FY2010–FY2017 and evaluated on FY2018. PR-AUC is the primary model-selection metric because charge-offs are the minority class.
 
 | Model | PR-AUC | ROC-AUC | F1 at 0.50 | Brier score |
 | --- | ---: | ---: | ---: | ---: |
 | Dummy classifier | 0.1013 | 0.5000 | 0.0000 | 0.1013 |
-| Logistic regression | **0.5864** | **0.8777** | **0.5354** | **0.0616** |
+| Logistic regression | 0.5864 | 0.8777 | 0.5354 | 0.0616 |
 | Logistic regression, balanced classes | 0.4900 | 0.8538 | 0.3187 | 0.2405 |
+| Random forest | 0.7819 | 0.9406 | 0.7416 | 0.0483 |
+| Initial XGBoost | 0.8227 | 0.9671 | 0.7072 | 0.0615 |
+| Tuned XGBoost | **0.8257** | **0.9671** | **0.7547** | **0.0445** |
 
-Unweighted logistic regression is the current benchmark. The class-weighted variant achieves higher recall at the default threshold, but has lower PR-AUC and substantially poorer probability calibration. These are validation results only; FY2019 remains untouched.
+Tuned XGBoost was selected using expanding temporal cross-validation within FY2010–FY2017 and FY2018 validation PR-AUC. Its FY2018 F1-maximizing threshold was 0.7482.
+
+## Final FY2019 test results
+
+The frozen tuned XGBoost pipeline was evaluated once on the untouched FY2019 test set using the locked threshold selected on FY2018.
+
+| PR-AUC | ROC-AUC | Precision | Recall | F1 | Brier score |
+| ---: | ---: | ---: | ---: | ---: | ---: |
+| 0.7750 | 0.9460 | 0.7389 | 0.7082 | 0.7232 | 0.0518 |
+
+The decline from FY2018 validation performance is expected for a later loan cohort and reinforces the value of chronological evaluation. See the [test metrics](reports/fy2019_test_metrics.csv) and [grouped feature importance](reports/fy2019_grouped_feature_importance.csv) tables.
 
 ## Repository structure
 
@@ -96,7 +109,7 @@ Unweighted logistic regression is the current benchmark. The class-weighted vari
 │   ├── 04_baseline_models.ipynb
 │   ├── 05_model_tuning.ipynb
 │   └── 06_interpretation.ipynb
-├── reports/figures/         # Exported figures; excluded from Git
+├── reports/                 # Final metrics, feature-importance tables, and figures
 ├── src/                     # Reusable pipeline code (in progress)
 └── tests/                   # Automated tests (in progress)
 ```
@@ -119,7 +132,8 @@ After adding the raw dataset to `data/raw/`, run the notebooks in numerical orde
 ## Limitations
 
 - The data contains only loans with final observed statuses. More recent loans may have had less time to resolve, which can introduce outcome-observation bias.
-- The selected threshold will maximize validation-set F1 because no lender-specific cost ratio or review-capacity constraint is available. In a production lending setting, the operating threshold should reflect business costs and risk appetite.
+- The threshold was selected by maximizing FY2018 validation-set F1 because no lender-specific cost ratio or review-capacity constraint is available. In a production lending setting, the operating threshold should reflect business costs and risk appetite.
+- Aggregated split importance can favor categorical feature families with many one-hot levels, so feature importance should be interpreted alongside SHAP results rather than as a causal ranking.
 - Results describe this historical SBA dataset and should not be interpreted as a production credit-decision system.
 
 ## License

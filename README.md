@@ -125,6 +125,10 @@ The notebooks remain the exploratory record of the project. The `src/` pipeline 
 
 The repository includes an interactive single-loan demo in `app/app.py`. It accepts raw approval-time inputs, engineers the same features used during training, and applies the frozen tuned XGBoost artifact.
 
+[![Open in Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://sba-loan-default-predictor.streamlit.app/)
+
+Live demo: [sba-loan-default-predictor.streamlit.app](https://sba-loan-default-predictor.streamlit.app/)
+
 Run it locally from the repository root:
 
 ```powershell

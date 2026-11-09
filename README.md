@@ -149,7 +149,7 @@ Live demo: [sba-loan-default-predictor.streamlit.app](https://sba-loan-default-p
 
 ![Streamlit demo showing a charge-off prediction](docs/images/streamlit-demo.png)
 
-*Streamlit interface using approval-time loan information and the frozen tuned XGBoost pipeline. The screenshot predates the removal of the "Sold in secondary market" input.*
+*Streamlit interface using approval-time loan information and the frozen tuned XGBoost pipeline.*
 
 Run it locally from the repository root:
 

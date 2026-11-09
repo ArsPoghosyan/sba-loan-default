@@ -35,7 +35,6 @@ def make_raw_approval_dataframe() -> pd.DataFrame:
             "RevolverStatus": ["N"],
             "SBADistrictOffice": ["DALLAS"],
             "SBAGuaranteedApproval": [90_000.0],
-            "SoldSecMrktInd": ["Y"],
             "TermInMonths": [120.0],
         }
     )
@@ -48,7 +47,7 @@ def test_build_inference_features_creates_model_schema() -> None:
     )
 
     assert set(feature_df.columns) == EXPECTED_MODEL_FEATURES
-    assert feature_df.shape == (1, 23)
+    assert feature_df.shape == (1, 22)
 
 
 def test_build_inference_features_creates_expected_values() -> None:
@@ -61,7 +60,6 @@ def test_build_inference_features_creates_expected_values() -> None:
     assert feature_df["is_franchise"].iloc[0] == 0
     assert feature_df["naics_sector"].iloc[0] == "72"
     assert feature_df["approval_month"].iloc[0] == "2"
-    assert feature_df["sold_secondary_market"].iloc[0] == 1
     assert feature_df["term_years"].iloc[0] == 10.0
     assert feature_df["same_state_lender"].iloc[0] == 1
     assert (
@@ -82,12 +80,12 @@ def test_build_inference_features_converts_suspicious_zeros() -> None:
     assert pd.isna(feature_df["term_years"].iloc[0])
 
 
-def test_build_inference_features_rejects_invalid_secondary_market_code() -> None:
-    """Unknown secondary-market codes must not be silently mapped."""
+def test_build_inference_features_rejects_secondary_market_input() -> None:
+    """A post-approval secondary-market field must not re-enter the model."""
     raw_df = make_raw_approval_dataframe()
-    raw_df["SoldSecMrktInd"] = "UNKNOWN"
+    raw_df["SoldSecMrktInd"] = "Y"
 
-    with pytest.raises(ValueError, match="Unexpected SoldSecMrktInd"):
+    with pytest.raises(ValueError, match="SoldSecMrktInd"):
         build_inference_features(raw_df)
 
 

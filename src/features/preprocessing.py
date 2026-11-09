@@ -14,7 +14,6 @@ NUMERIC_FEATURES = [
     "JobsSupported",
     "sba_guarantee_ratio",
     "is_franchise",
-    "sold_secondary_market",
     "log_gross_approval",
     "log_sba_guaranteed_approval",
     "term_years",

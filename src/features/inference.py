@@ -31,14 +31,12 @@ RAW_APPROVAL_FIELDS = {
     "RevolverStatus",
     "SBADistrictOffice",
     "SBAGuaranteedApproval",
-    "SoldSecMrktInd",
     "TermInMonths",
 }
 
 RAW_COLUMNS_TO_DROP = [
     "ApprovalDate",
     "FranchiseCode",
-    "SoldSecMrktInd",
 ]
 
 EXPECTED_MODEL_FEATURES = set(
@@ -106,24 +104,6 @@ def build_inference_features(raw_df: pd.DataFrame) -> pd.DataFrame:
 
     inference_df["approval_month"] = (
         approval_dates.dt.month.astype("Int64")
-    )
-
-    observed_secondary_market_values = set(
-        inference_df["SoldSecMrktInd"].dropna().unique()
-    )
-
-    unexpected_values = (
-        observed_secondary_market_values - {"Y", "N"}
-    )
-
-    if unexpected_values:
-        raise ValueError(
-            "Unexpected SoldSecMrktInd values: "
-            f"{sorted(unexpected_values)}"
-        )
-
-    inference_df["sold_secondary_market"] = (
-        inference_df["SoldSecMrktInd"].map({"Y": 1, "N": 0})
     )
 
     inference_df.loc[

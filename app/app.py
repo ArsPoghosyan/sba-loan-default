@@ -19,7 +19,9 @@ from src.models.predict import (
 )
 
 
-MODEL_PATH = PROJECT_ROOT / "models" / "tuned_xgboost_pipeline.joblib"
+MODEL_PATH = (
+    PROJECT_ROOT / "models" / "tuned_xgboost_pipeline_no_secmkt.joblib"
+)
 
 STATE_OPTIONS = [
     "AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DC", "DE", "FL",
@@ -261,11 +263,6 @@ with st.form("loan_input_form"):
             ["No", "Yes"],
         )
 
-        secondary_market_indicator = st.selectbox(
-            "Sold in secondary market",
-            ["Not reported", "Yes", "No"],
-        )
-
     submitted = st.form_submit_button(
         "Estimate charge-off risk",
         type="primary",
@@ -300,9 +297,6 @@ if submitted:
         ),
         "SBADistrictOffice": district_office.strip().upper(),
         "SBAGuaranteedApproval": float(guaranteed_approval),
-        "SoldSecMrktInd": optional_yes_no_to_indicator(
-            secondary_market_indicator
-        ),
         "TermInMonths": float(term_in_months),
     }
 

@@ -46,7 +46,6 @@ def make_raw_inputs() -> dict[str, object]:
         "RevolverStatus": "N",
         "SBADistrictOffice": "DALLAS",
         "SBAGuaranteedApproval": 90_000.0,
-        "SoldSecMrktInd": "Y",
         "TermInMonths": 120.0,
     }
 

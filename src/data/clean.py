@@ -17,7 +17,6 @@ REQUIRED_COLUMNS = {
     "FranchiseCode",
     "NaicsCode",
     "ApprovalDate",
-    "SoldSecMrktInd",
     "InitialInterestRate",
     "TermInMonths",
 }
@@ -43,6 +42,8 @@ DROP_COLUMNS = [
     "FranchiseCode",
     "FranchiseName",
     "NaicsDescription",
+    # The guaranteed portion is sold on the secondary market after
+    # approval, so this flag is not known at decision time (leakage).
     "SoldSecMrktInd",
     "ProjectCounty",
     "ApprovalDate",
@@ -109,26 +110,6 @@ def clean_sba_loans(raw_df: pd.DataFrame) -> pd.DataFrame:
         .dt.month
         .astype("Int64")
     )
-
-    observed_secondary_market_values = set(
-        clean_df["SoldSecMrktInd"].dropna().unique()
-    )
-    expected_secondary_market_values = {"Y", "N"}
-
-    unexpected_values = (
-        observed_secondary_market_values
-        - expected_secondary_market_values
-    )
-
-    if unexpected_values:
-        raise ValueError(
-            "Unexpected SoldSecMrktInd values: "
-            f"{sorted(unexpected_values)}"
-        )
-
-    clean_df["sold_secondary_market"] = clean_df[
-        "SoldSecMrktInd"
-    ].map({"Y": 1, "N": 0})
 
     missing_drop_columns = set(DROP_COLUMNS) - set(clean_df.columns)
 

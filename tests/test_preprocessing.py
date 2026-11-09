@@ -20,7 +20,6 @@ def make_feature_dataframe() -> pd.DataFrame:
         "JobsSupported": [3.0, 10.0, 1.0],
         "sba_guarantee_ratio": [0.5, 0.75, 0.9],
         "is_franchise": [0, 1, 0],
-        "sold_secondary_market": [1.0, np.nan, 0.0],
         "log_gross_approval": [10.0, 11.0, 9.0],
         "log_sba_guaranteed_approval": [9.5, 10.5, 8.5],
         "term_years": [5.0, 10.0, 7.0],
@@ -59,6 +58,9 @@ def test_build_preprocessor_uses_expected_feature_groups() -> None:
     assert transformer_names == ["num", "cat"]
     assert preprocessor.transformers[0][2] == NUMERIC_FEATURES
     assert preprocessor.transformers[1][2] == CATEGORICAL_FEATURES
+    assert "sold_secondary_market" not in (
+        NUMERIC_FEATURES + CATEGORICAL_FEATURES
+    )
 
 
 def test_preprocessor_fits_and_transforms_training_data() -> None:

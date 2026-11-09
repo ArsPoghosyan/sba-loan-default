@@ -26,7 +26,7 @@ def make_raw_dataframe() -> pd.DataFrame:
                 "2018-02-20",
                 "2019-03-10",
             ],
-            "SoldSecMrktInd": ["Y", pd.NA, "N"],
+            "SoldSecMrktInd": ["Y", "UNKNOWN", pd.NA],
             "InitialInterestRate": [0.0, 5.0, 6.0],
             "TermInMonths": [0.0, 120.0, 60.0],
         }
@@ -55,8 +55,6 @@ def test_clean_sba_loans_creates_expected_features() -> None:
     assert cleaned_df["is_franchise"].tolist() == [0, 1]
     assert cleaned_df["naics_sector"].tolist() == ["72", "54"]
     assert cleaned_df["approval_month"].tolist() == [1, 2]
-    assert cleaned_df["sold_secondary_market"].iloc[0] == 1
-    assert pd.isna(cleaned_df["sold_secondary_market"].iloc[1])
 
 
 def test_clean_sba_loans_converts_suspicious_zeros_to_missing() -> None:
@@ -74,13 +72,16 @@ def test_clean_sba_loans_removes_leakage_and_identity_columns() -> None:
     assert not set(DROP_COLUMNS).intersection(cleaned_df.columns)
 
 
-def test_clean_sba_loans_rejects_unexpected_secondary_market_codes() -> None:
-    """Unknown secondary-market values must not silently become zero."""
-    raw_df = make_raw_dataframe()
-    raw_df.loc[0, "SoldSecMrktInd"] = "UNKNOWN"
+def test_clean_sba_loans_excludes_post_approval_secondary_market() -> None:
+    """The secondary-market sale happens after approval, so it is dropped.
 
-    with pytest.raises(ValueError, match="Unexpected SoldSecMrktInd"):
-        clean_sba_loans(raw_df)
+    The fixture includes an unrecognised code to confirm the raw field is
+    no longer parsed at all, only removed.
+    """
+    cleaned_df = clean_sba_loans(make_raw_dataframe())
+
+    assert "SoldSecMrktInd" not in cleaned_df.columns
+    assert "sold_secondary_market" not in cleaned_df.columns
 
 
 def test_clean_sba_loans_rejects_invalid_guarantee_ratio() -> None:
